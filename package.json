@@ -1,0 +1,9 @@
+{
+  "name": "juris-ts-starter",
+  "version": "1.0.0",
+  "description": "Juris TS starter",
+  "main": "index.js",
+  "repository": "https://github.com/jwelmac/juris-ts-starter",
+  "author": "Jermaine McFarlane <j.mcfarlane.mbbs@gmail.com>",
+  "license": "MIT"
+}
