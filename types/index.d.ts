@@ -122,6 +122,19 @@ declare module 'juris' {
     templateObserver?: TemplateObserverConfig;
     defaultPlaceholder?: PlaceholderConfig;
     placeholders?: Record<string, PlaceholderConfig>;
+    /** Optional Features */
+    features?: {
+      /** Enable CSS extraction */
+      cssExtractor?: typeof import('juris/juris-cssextractor').CSSExtractor;
+      /** Enable progressive enhancement */
+      enhance?: typeof import('juris/juris-enhance').DOMEnhancer;
+      /** Enable stateful services */
+      headless?: typeof import('juris/juris-headless').HeadlessManager;
+      /** Enable template compilation */
+      template?: typeof import('juris/juris-template').Template;
+      /** Enable enhanced web components */
+      webComponent?: typeof import('juris/juris-webcomponent').WebComponentFactory;
+    },
   }
 
   export interface TemplateObserverConfig {
@@ -2243,3 +2256,90 @@ declare module 'juris' {
   export type JurisComponentDefinition = Juris.ComponentDefinition;
 
 };
+
+// Ambient module declarations for optional Juris feature packages
+declare module 'juris/juris-cssextractor' {
+  export interface CSSExtractorOptions {
+    extract?: boolean;
+    minify?: boolean;
+    sourceMap?: boolean;
+  }
+  export class CSSExtractor {
+    constructor(options?: CSSExtractorOptions);
+    extractFromDocument(doc?: Document): string;
+    clearCache(): void;
+    getStats(): { extracted: number; cached: number };
+  }
+  export default CSSExtractor;
+}
+
+declare module 'juris/juris-enhance' {
+  import { JurisContext, EnhancementStats, EnhancementOptions } from 'juris';
+  export interface DOMEnhancer {
+    enhance(root: Element | Document | string, options?: any): EnhancementStats;
+    getStats(): EnhancementStats;
+    configure(options: Partial<EnhancementOptions>): void;
+  }
+  const enhancer: DOMEnhancer;
+  export default enhancer;
+}
+
+declare module 'juris/juris-headless' {
+  import { HeadlessComponentConfig, HeadlessStatus, JurisContext } from 'juris';
+  export class HeadlessManager<TState = any, TServices = any> {
+    constructor(components?: Record<string, HeadlessComponentConfig<TState, any, any>>);
+    register(name: string, config: HeadlessComponentConfig<TState, any, any>): void;
+    initAll(context?: JurisContext<TState>): Promise<void>;
+    getStatus(): HeadlessStatus;
+    getAPI<T = any>(name: string): T | undefined;
+  }
+  export { HeadlessManager };
+  export default HeadlessManager;
+}
+
+declare module 'juris/juris-template' {
+  import { TemplateCompiler, ParsedTemplate } from 'juris';
+  export interface Template {
+    compile(template: HTMLTemplateElement | string): ParsedTemplate;
+    compileAsync(template: HTMLTemplateElement | string): Promise<ParsedTemplate>;
+    getCompiler(): TemplateCompiler;
+  }
+  const template: Template;
+  export default template;
+}
+
+declare module 'juris/juris-webcomponent' {
+  import { JurisContext } from 'juris';
+  export interface WebComponentFactory {
+    define(name: string, options?: any): void;
+    upgrade(element: Element, context?: JurisContext): void;
+    create(name: string, props?: Record<string, any>): HTMLElement;
+  }
+  const factory: WebComponentFactory;
+  export default factory;
+}
+
+// Headless extra modules referenced by unpkg headless bundle
+declare module 'juris/headless/juris-fluentstate' {
+  export class FluentState<T = any> {
+    constructor(initial?: T);
+    get(path?: string, defaultValue?: any): any;
+    set(path: string, value: any): void;
+    subscribe(path: string, cb: (v: any) => void): () => void;
+  }
+  export default FluentState;
+}
+
+declare module 'juris/headless/juris-router' {
+  export interface RouterOptions {
+    mode?: 'history' | 'hash';
+    base?: string;
+  }
+  export class Router {
+    constructor(options?: RouterOptions);
+    navigate(path: string): void;
+    on(route: string, handler: (...args: any[]) => any): void;
+    getCurrent(): string;
+  }
+  export default Router;
+}
