@@ -2058,12 +2058,8 @@ declare module 'juris' {
   export type JurisComponentFunction<TState = any, TServices = any, THeadlessComponents = any> = (
     props: Record<string, any>,
     context: JurisContext<TState, TServices, THeadlessComponents>
-  ) => MaybeAsync<JurisVDOMElement | {
-    render: () => AsyncCapable<JurisVDOMElement>;
-    // ADD: Optional placeholder indicator
+  ) => MaybeAsync<JurisLifecycleComponent & {
     indicator?: JurisVDOMElement;
-    hooks?: ComponentHooks;
-    api?: Record<string, any>;
   }>;
 
   // Lifecycle hooks with smart async support
@@ -2074,10 +2070,10 @@ declare module 'juris' {
   }
 
   // Component with lifecycle - render can be async
-  export interface JurisLifecycleComponent {
+  export interface JurisLifecycleComponent<API = Record<string, any>> {
     render: () => AsyncCapable<JurisVDOMElement>;
     hooks?: ComponentHooks;
-    api?: Record<string, any>;
+    api?: API;
   }
 
   // Headless component
