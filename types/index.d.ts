@@ -1990,8 +1990,6 @@ declare module 'juris' {
         defaultValue?: SafePathValue<TState, TPath>,
         track?: boolean
       ): SafePathValue<TState, TPath>;
-      // Overload for generic string paths
-      <T>(path: string, defaultValue?: T, track?: boolean): T;
     }
     : <T>(path: string, defaultValue?: T, track?: boolean) => T;
 
@@ -2002,8 +2000,6 @@ declare module 'juris' {
         path: TPath,
         value: SafePathValue<TState, TPath>
       ): void;
-      // Overload for generic string paths
-      <T>(path: string, value: T): void;
     }
     : <T>(path: string, value: T) => void;
   }
